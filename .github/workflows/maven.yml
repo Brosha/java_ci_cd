@@ -14,15 +14,15 @@ on:
   pull_request:
     branches: [ "master" ]
 env:  
-  IMAGE_NAME: ${{ github.repository }}    
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      pull-requests: write
-      repository-projects: write
-
+     contents: write
+     pull-requests: write
+     repository-projects: write
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
@@ -32,7 +32,17 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Run tests
-      run: mvn test
+      run: mvn test  
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
+
+    steps:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
       
